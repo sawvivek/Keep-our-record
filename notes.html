@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Notes & Summary</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-page="notes">
+    <header class="topbar">
+      <div class="topbar-row">
+        <div>
+          <h1>Notes & Summary</h1>
+          <p>Save important notes and quick summaries anytime.</p>
+        </div>
+        <button id="themeToggle" class="btn secondary" type="button">
+          Dark Mode
+        </button>
+      </div>
+      <nav class="topnav">
+        <a class="nav-link" href="index.html">Dashboard</a>
+        <a class="nav-link" href="updates.html">Daily Updates</a>
+        <a class="nav-link" href="attendance.html">Attendance</a>
+        <a class="nav-link" href="writeups.html">Writeups</a>
+        <a class="nav-link active" href="notes.html">Notes</a>
+      </nav>
+      <p id="storageNotice" class="storage-notice" hidden></p>
+    </header>
+
+    <main class="container">
+      <section class="card">
+        <h2>Add Note</h2>
+        <form id="noteForm" class="form-grid">
+          <div class="field">
+            <label for="noteDate">Date</label>
+            <input type="date" id="noteDate" required />
+          </div>
+          <div class="field">
+            <label for="noteTitle">Title</label>
+            <input
+              type="text"
+              id="noteTitle"
+              placeholder="Example: Weekly Summary"
+              required
+            />
+          </div>
+          <div class="field field-full">
+            <label for="noteText">Summary/Note</label>
+            <textarea
+              id="noteText"
+              rows="4"
+              placeholder="Write your important summary or notes here..."
+              required
+            ></textarea>
+          </div>
+          <button type="submit" class="btn">Save Note</button>
+        </form>
+      </section>
+
+      <section class="card stats">
+        <h2>Notes Summary</h2>
+        <div class="summary-grid">
+          <div>
+            <p class="label">Total Notes</p>
+            <p id="totalNotes" class="value">0</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <h2>Saved Notes</h2>
+          <button id="clearNotes" class="btn danger" type="button">
+            Clear All
+          </button>
+        </div>
+        <div class="toolbar">
+          <input
+            id="noteSearch"
+            type="text"
+            placeholder="Search by title or note text"
+          />
+        </div>
+        <div id="noteList" class="list"></div>
+      </section>
+    </main>
+
+    <div id="toast" class="toast" aria-live="polite"></div>
+    <script src="script.js"></script>
+  </body>
+</html>

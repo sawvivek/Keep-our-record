@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Daily Update Dashboard</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-page="dashboard">
+    <header class="topbar">
+      <div class="topbar-row">
+        <div>
+          <h1>Daily Update Dashboard</h1>
+          <p>Track updates, attendance, and writeups from separate pages.</p>
+        </div>
+        <button id="themeToggle" class="btn secondary" type="button">
+          Dark Mode
+        </button>
+      </div>
+      <nav class="topnav">
+        <a class="nav-link active" href="index.html">Dashboard</a>
+        <a class="nav-link" href="updates.html">Daily Updates</a>
+        <a class="nav-link" href="attendance.html">Attendance</a>
+        <a class="nav-link" href="writeups.html">Writeups</a>
+        <a class="nav-link" href="notes.html">Notes</a>
+      </nav>
+      <p id="storageNotice" class="storage-notice" hidden></p>
+    </header>
+
+    <main class="container">
+      <section class="card hero-card">
+        <p class="hero-kicker">Our Website</p>
+        <h2>MAKE PROGRESS FOR YOU</h2>
+        <p class="hero-sub">
+          Organize daily work, attendance, writeups, and personal notes in one
+          futuristic workspace.
+        </p>
+        <h3>Quick Access</h3>
+        <div class="quick-grid">
+          <a class="quick-link" href="updates.html">
+            <h3>Daily Updates</h3>
+            <p>Add and review what you completed every day.</p>
+          </a>
+          <a class="quick-link" href="attendance.html">
+            <h3>Attendance</h3>
+            <p>Save class attendance and monitor percentage.</p>
+          </a>
+          <a class="quick-link" href="writeups.html">
+            <h3>Writeups & Checkup</h3>
+            <p>Manage writeups and teacher checkup status.</p>
+          </a>
+          <a class="quick-link" href="notes.html">
+            <h3>Notes & Summary</h3>
+            <p>Save personal summaries and important notes.</p>
+          </a>
+        </div>
+      </section>
+
+      <section class="card stats">
+        <h2>Attendance Summary</h2>
+        <div class="summary-grid">
+          <div>
+            <p class="label">Total Classes</p>
+            <p id="totalClasses" class="value">0</p>
+          </div>
+          <div>
+            <p class="label">Present</p>
+            <p id="presentCount" class="value">0</p>
+          </div>
+          <div>
+            <p class="label">Absent</p>
+            <p id="absentCount" class="value">0</p>
+          </div>
+          <div>
+            <p class="label">Attendance %</p>
+            <p id="attendancePercent" class="value">0%</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="card stats">
+        <h2>Writeup Summary</h2>
+        <div class="summary-grid">
+          <div>
+            <p class="label">Total Writeups</p>
+            <p id="totalWriteups" class="value">0</p>
+          </div>
+          <div>
+            <p class="label">Pending</p>
+            <p id="pendingWriteups" class="value">0</p>
+          </div>
+          <div>
+            <p class="label">Checked</p>
+            <p id="checkedWriteups" class="value">0</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="card stats">
+        <h2>Notes Summary</h2>
+        <div class="summary-grid">
+          <div>
+            <p class="label">Total Notes</p>
+            <p id="totalNotes" class="value">0</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Recent Daily Updates</h2>
+        <div id="dashboardUpdates" class="list"></div>
+      </section>
+
+      <section class="card">
+        <h2>Recent Writeups</h2>
+        <div id="dashboardWriteups" class="list"></div>
+      </section>
+
+      <section class="card">
+        <h2>Recent Notes</h2>
+        <div id="dashboardNotes" class="list"></div>
+      </section>
+    </main>
+
+    <div id="toast" class="toast" aria-live="polite"></div>
+    <script src="script.js"></script>
+  </body>
+</html>

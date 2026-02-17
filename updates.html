@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Daily Updates</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-page="updates">
+    <header class="topbar">
+      <div class="topbar-row">
+        <div>
+          <h1>Daily Updates</h1>
+          <p>Add your daily work and track your history.</p>
+        </div>
+        <button id="themeToggle" class="btn secondary" type="button">
+          Dark Mode
+        </button>
+      </div>
+      <nav class="topnav">
+        <a class="nav-link" href="index.html">Dashboard</a>
+        <a class="nav-link active" href="updates.html">Daily Updates</a>
+        <a class="nav-link" href="attendance.html">Attendance</a>
+        <a class="nav-link" href="writeups.html">Writeups</a>
+        <a class="nav-link" href="notes.html">Notes</a>
+      </nav>
+      <p id="storageNotice" class="storage-notice" hidden></p>
+    </header>
+
+    <main class="container">
+      <section class="card">
+        <h2>Add Today&apos;s Update</h2>
+        <form id="dailyForm" class="form-grid">
+          <div class="field">
+            <label for="updateDate">Date</label>
+            <input type="date" id="updateDate" required />
+          </div>
+          <div class="field">
+            <label for="updateTitle">What did you do?</label>
+            <input
+              type="text"
+              id="updateTitle"
+              placeholder="Example: Completed DBMS assignment"
+              required
+            />
+          </div>
+          <div class="field field-full">
+            <label for="updateNotes">Notes</label>
+            <textarea
+              id="updateNotes"
+              rows="3"
+              placeholder="Optional details..."
+            ></textarea>
+          </div>
+          <button type="submit" class="btn">Save Daily Update</button>
+        </form>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <h2>Daily Updates History</h2>
+          <button id="clearUpdates" class="btn danger" type="button">
+            Clear All
+          </button>
+        </div>
+        <div class="toolbar">
+          <input
+            id="updateSearch"
+            type="text"
+            placeholder="Search updates by title or notes"
+          />
+        </div>
+        <div id="dailyList" class="list"></div>
+      </section>
+    </main>
+
+    <div id="toast" class="toast" aria-live="polite"></div>
+    <script src="script.js"></script>
+  </body>
+</html>

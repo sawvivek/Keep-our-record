@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Attendance</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-page="attendance">
+    <header class="topbar">
+      <div class="topbar-row">
+        <div>
+          <h1>Attendance Tracker</h1>
+          <p>Save attendance and monitor your percentage.</p>
+        </div>
+        <button id="themeToggle" class="btn secondary" type="button">
+          Dark Mode
+        </button>
+      </div>
+      <nav class="topnav">
+        <a class="nav-link" href="index.html">Dashboard</a>
+        <a class="nav-link" href="updates.html">Daily Updates</a>
+        <a class="nav-link active" href="attendance.html">Attendance</a>
+        <a class="nav-link" href="writeups.html">Writeups</a>
+        <a class="nav-link" href="notes.html">Notes</a>
+      </nav>
+      <p id="storageNotice" class="storage-notice" hidden></p>
+    </header>
+
+    <main class="container">
+      <section class="card">
+        <h2>Add Attendance</h2>
+        <form id="attendanceForm" class="form-grid">
+          <div class="field">
+            <label for="attendanceDate">Date</label>
+            <input type="date" id="attendanceDate" required />
+          </div>
+          <div class="field">
+            <label for="subjectName">Subject</label>
+            <input
+              type="text"
+              id="subjectName"
+              placeholder="Example: Mathematics"
+              required
+            />
+          </div>
+          <div class="field">
+            <label for="attendanceStatus">Status</label>
+            <select id="attendanceStatus" required>
+              <option value="Present">Present</option>
+              <option value="Absent">Absent</option>
+            </select>
+          </div>
+          <button type="submit" class="btn">Save Attendance</button>
+        </form>
+      </section>
+
+      <section class="card stats">
+        <h2>Attendance Summary</h2>
+        <div class="summary-grid">
+          <div>
+            <p class="label">Total Classes</p>
+            <p id="totalClasses" class="value">0</p>
+          </div>
+          <div>
+            <p class="label">Present</p>
+            <p id="presentCount" class="value">0</p>
+          </div>
+          <div>
+            <p class="label">Absent</p>
+            <p id="absentCount" class="value">0</p>
+          </div>
+          <div>
+            <p class="label">Attendance %</p>
+            <p id="attendancePercent" class="value">0%</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <h2>Attendance History</h2>
+          <button id="clearAttendance" class="btn danger" type="button">
+            Clear All
+          </button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Subject</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="attendanceBody"></tbody>
+          </table>
+        </div>
+        <div class="toolbar toolbar-end">
+          <label for="attendanceFilter">Filter:</label>
+          <select id="attendanceFilter">
+            <option value="All">All</option>
+            <option value="Present">Present</option>
+            <option value="Absent">Absent</option>
+          </select>
+        </div>
+      </section>
+    </main>
+
+    <div id="toast" class="toast" aria-live="polite"></div>
+    <script src="script.js"></script>
+  </body>
+</html>

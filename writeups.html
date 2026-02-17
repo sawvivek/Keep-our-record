@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Writeups & Teacher Checkup</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-page="writeups">
+    <header class="topbar">
+      <div class="topbar-row">
+        <div>
+          <h1>Writeups & Teacher Checkup</h1>
+          <p>Save writeups and monitor checked status.</p>
+        </div>
+        <button id="themeToggle" class="btn secondary" type="button">
+          Dark Mode
+        </button>
+      </div>
+      <nav class="topnav">
+        <a class="nav-link" href="index.html">Dashboard</a>
+        <a class="nav-link" href="updates.html">Daily Updates</a>
+        <a class="nav-link" href="attendance.html">Attendance</a>
+        <a class="nav-link active" href="writeups.html">Writeups</a>
+        <a class="nav-link" href="notes.html">Notes</a>
+      </nav>
+      <p id="storageNotice" class="storage-notice" hidden></p>
+    </header>
+
+    <main class="container">
+      <section class="card">
+        <h2>Add Writeup</h2>
+        <form id="writeupForm" class="form-grid">
+          <div class="field">
+            <label for="writeupDate">Date</label>
+            <input type="date" id="writeupDate" required />
+          </div>
+          <div class="field">
+            <label for="writeupTopic">Topic/Subject</label>
+            <input
+              type="text"
+              id="writeupTopic"
+              placeholder="Example: OOPS Lab Writeup"
+              required
+            />
+          </div>
+          <div class="field field-full">
+            <label for="writeupText">Writeup</label>
+            <textarea
+              id="writeupText"
+              rows="4"
+              placeholder="Write your work summary here..."
+              required
+            ></textarea>
+          </div>
+          <div class="field">
+            <label for="teacherName">Teacher Name</label>
+            <input
+              type="text"
+              id="teacherName"
+              placeholder="Example: Prof. Sharma"
+            />
+          </div>
+          <div class="field">
+            <label for="teacherStatus">Checkup Status</label>
+            <select id="teacherStatus" required>
+              <option value="Pending">Pending</option>
+              <option value="Checked">Checked</option>
+            </select>
+          </div>
+          <div class="field field-full">
+            <label for="teacherRemarks">Teacher Remarks</label>
+            <textarea
+              id="teacherRemarks"
+              rows="2"
+              placeholder="Optional remarks..."
+            ></textarea>
+          </div>
+          <button type="submit" class="btn">Save Writeup</button>
+        </form>
+      </section>
+
+      <section class="card stats">
+        <h2>Writeup Summary</h2>
+        <div class="summary-grid">
+          <div>
+            <p class="label">Total Writeups</p>
+            <p id="totalWriteups" class="value">0</p>
+          </div>
+          <div>
+            <p class="label">Pending</p>
+            <p id="pendingWriteups" class="value">0</p>
+          </div>
+          <div>
+            <p class="label">Checked</p>
+            <p id="checkedWriteups" class="value">0</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <h2>Writeup History</h2>
+          <button id="clearWriteups" class="btn danger" type="button">
+            Clear All
+          </button>
+        </div>
+        <div class="toolbar row-toolbar">
+          <input
+            id="writeupSearch"
+            type="text"
+            placeholder="Search by topic, writeup, teacher"
+          />
+          <select id="writeupFilter">
+            <option value="All">All Status</option>
+            <option value="Pending">Pending</option>
+            <option value="Checked">Checked</option>
+          </select>
+        </div>
+        <div id="writeupList" class="list"></div>
+      </section>
+    </main>
+
+    <div id="toast" class="toast" aria-live="polite"></div>
+    <script src="script.js"></script>
+  </body>
+</html>
