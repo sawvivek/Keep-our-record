@@ -78,32 +78,62 @@
       </section>
 
       <section class="card">
-        <div class="section-head">
-          <h2>Attendance History</h2>
-          <button id="clearAttendance" class="btn danger" type="button">
-            Clear All
-          </button>
-        </div>
+        <h2>Subject-wise Attendance</h2>
         <div class="table-wrap">
           <table>
             <thead>
               <tr>
-                <th>Date</th>
+                <th>Sr No</th>
                 <th>Subject</th>
-                <th>Status</th>
-                <th>Action</th>
+                <th>Present</th>
+                <th>Total</th>
+                <th>Percentage</th>
               </tr>
             </thead>
-            <tbody id="attendanceBody"></tbody>
+            <tbody id="subjectAttendanceBody"></tbody>
           </table>
         </div>
-        <div class="toolbar toolbar-end">
-          <label for="attendanceFilter">Filter:</label>
-          <select id="attendanceFilter">
-            <option value="All">All</option>
-            <option value="Present">Present</option>
-            <option value="Absent">Absent</option>
-          </select>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <h2>Attendance History</h2>
+          <button
+            id="toggleAttendanceHistory"
+            class="btn secondary"
+            type="button"
+            aria-expanded="false"
+          >
+            Show History
+          </button>
+        </div>
+        <div id="attendanceHistoryContent" hidden>
+          <div class="toolbar toolbar-end">
+            <button id="clearAttendance" class="btn danger" type="button">
+              Clear All
+            </button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Subject</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="attendanceBody"></tbody>
+            </table>
+          </div>
+          <div class="toolbar toolbar-end">
+            <label for="attendanceFilter">Filter:</label>
+            <select id="attendanceFilter">
+              <option value="All">All</option>
+              <option value="Present">Present</option>
+              <option value="Absent">Absent</option>
+            </select>
+          </div>
         </div>
       </section>
     </main>

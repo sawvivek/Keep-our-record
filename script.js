@@ -12,9 +12,21 @@ const WRITEUP_KEY = `${PREFIX}writeups_records_v1`;
 const NOTES_KEY = `${PREFIX}notes_records_v1`;
 const THEME_KEY = `${PREFIX}theme_v1`;
 
+const RESET_KEYS = [
+  DAILY_KEY,
+  ATTENDANCE_KEY,
+  WRITEUP_KEY,
+  NOTES_KEY,
+  THEME_KEY,
+  LEGACY_DAILY_KEY,
+  LEGACY_ATTENDANCE_KEY,
+  LEGACY_WRITEUP_KEY,
+  LEGACY_NOTES_KEY,
+  LEGACY_THEME_KEY,
+].filter(Boolean);
+
 const page = document.body.dataset.page || "dashboard";
 const themeToggle = document.getElementById("themeToggle");
-let currentThemeLabel = null;
 const toast = document.getElementById("toast");
 const storageNotice = document.getElementById("storageNotice");
 
@@ -177,10 +189,6 @@ function loadTheme() {
   return storage.get(THEME_KEY) || storage.get(LEGACY_THEME_KEY) || "light";
 }
 
-function normalizeTheme(theme) {
-  return theme === "dark" ? "dark" : "light";
-}
-
 function saveData(key, data) {
   storage.set(key, JSON.stringify(data));
 }
@@ -199,6 +207,77 @@ function showToast(message) {
   toastTimer = setTimeout(() => {
     toast.classList.remove("show");
   }, 1800);
+}
+
+function confirmDelete(itemLabel) {
+  return confirm(`Delete this ${itemLabel}?`);
+}
+
+function generateCaptchaCode(length = 6) {
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  let code = "";
+  for (let i = 0; i < length; i += 1) {
+    code += chars[Math.floor(Math.random() * chars.length)];
+  }
+  return code;
+}
+
+function resetAllDataWithVerification() {
+  const shouldReset = confirm(
+    "This will reset all saved data from all pages. Continue?",
+  );
+  if (!shouldReset) {
+    return;
+  }
+
+  const captcha = generateCaptchaCode();
+  const entered = prompt(
+    `Captcha verification required.\nType this code exactly to reset: ${captcha}`,
+  );
+
+  if (entered === null) {
+    return;
+  }
+
+  if (entered.trim().toUpperCase() !== captcha) {
+    alert("Captcha verification failed. Reset cancelled.");
+    return;
+  }
+
+  RESET_KEYS.forEach((key) => removeData(key));
+  updates = [];
+  attendance = [];
+  writeups = [];
+  notes = [];
+
+  alert("All data has been reset successfully.");
+  location.reload();
+}
+
+function setupResetButton() {
+  const topbarRow = document.querySelector(".topbar-row");
+  if (!topbarRow || document.getElementById("resetAllDataBtn")) {
+    return;
+  }
+
+  let actions = topbarRow.querySelector(".topbar-actions");
+  if (!actions) {
+    actions = document.createElement("div");
+    actions.className = "topbar-actions";
+    topbarRow.appendChild(actions);
+  }
+
+  if (themeToggle && themeToggle.parentElement !== actions) {
+    actions.appendChild(themeToggle);
+  }
+
+  const resetButton = document.createElement("button");
+  resetButton.id = "resetAllDataBtn";
+  resetButton.type = "button";
+  resetButton.className = "btn danger reset-btn";
+  resetButton.textContent = "Reset All Data";
+  resetButton.addEventListener("click", resetAllDataWithVerification);
+  actions.appendChild(resetButton);
 }
 
 function createId() {
@@ -266,39 +345,13 @@ function updateNotesSummary() {
   }
 }
 
-function ensureThemeStatusLabel() {
-  if (!themeToggle) {
-    return null;
-  }
-
-  const existing = document.getElementById("currentTheme");
-  if (existing) {
-    return existing;
-  }
-
-  const label = document.createElement("span");
-  label.id = "currentTheme";
-  label.className = "theme-current";
-  themeToggle.insertAdjacentElement("beforebegin", label);
-  return label;
-}
-
 function applyTheme(theme) {
-  const nextTheme = normalizeTheme(theme);
-  const dark = nextTheme === "dark";
+  const dark = theme === "dark";
   document.body.classList.toggle("dark", dark);
-  if (currentThemeLabel) {
-    currentThemeLabel.textContent = `Current Theme: ${dark ? "Dark" : "Light"}`;
-  }
   if (themeToggle) {
-    themeToggle.textContent = dark ? "Switch to Light" : "Switch to Dark";
+    themeToggle.textContent = dark ? "Light Mode" : "Dark Mode";
   }
-  storage.set(THEME_KEY, nextTheme);
-}
-
-function toggleTheme() {
-  const isDark = document.body.classList.contains("dark");
-  applyTheme(isDark ? "light" : "dark");
+  storage.set(THEME_KEY, dark ? "dark" : "light");
 }
 
 function renderUpdates() {
@@ -348,6 +401,7 @@ function renderUpdates() {
 function renderAttendance() {
   const attendanceBody = document.getElementById("attendanceBody");
   if (!attendanceBody) {
+    renderSubjectAttendanceSummary();
     updateAttendanceSummary();
     return;
   }
@@ -363,6 +417,7 @@ function renderAttendance() {
   if (!filtered.length) {
     attendanceBody.innerHTML =
       '<tr><td colspan="4" class="empty">No attendance records for this filter.</td></tr>';
+    renderSubjectAttendanceSummary();
     updateAttendanceSummary();
     return;
   }
@@ -382,7 +437,71 @@ function renderAttendance() {
     })
     .join("");
 
+  renderSubjectAttendanceSummary();
   updateAttendanceSummary();
+}
+
+function renderSubjectAttendanceSummary() {
+  const subjectAttendanceBody = document.getElementById(
+    "subjectAttendanceBody",
+  );
+  if (!subjectAttendanceBody) {
+    return;
+  }
+
+  if (!attendance.length) {
+    subjectAttendanceBody.innerHTML =
+      '<tr><td colspan="5" class="empty">No attendance records yet.</td></tr>';
+    return;
+  }
+
+  const subjectMap = new Map();
+
+  for (const item of attendance) {
+    const subjectText = (item.subject || "").trim();
+    if (!subjectText) {
+      continue;
+    }
+
+    const key = subjectText.toLowerCase();
+    const current = subjectMap.get(key) || {
+      subject: subjectText,
+      present: 0,
+      total: 0,
+    };
+
+    current.total += 1;
+    if (item.status === "Present") {
+      current.present += 1;
+    }
+
+    subjectMap.set(key, current);
+  }
+
+  const subjects = [...subjectMap.values()].sort((a, b) =>
+    a.subject.localeCompare(b.subject),
+  );
+
+  if (!subjects.length) {
+    subjectAttendanceBody.innerHTML =
+      '<tr><td colspan="5" class="empty">No attendance records yet.</td></tr>';
+    return;
+  }
+
+  subjectAttendanceBody.innerHTML = subjects
+    .map((item, index) => {
+      const percent = ((item.present / item.total) * 100).toFixed(2);
+      return `
+      <tr>
+        <td>${index + 1}</td>
+        <td>${escapeHtml(item.subject)}</td>
+        <td>${item.present}</td>
+        <td>${item.total}</td>
+        <td>${percent}%</td>
+      </tr>
+    `;
+    })
+    .join("");
 }
 
 function renderWriteups() {
@@ -646,9 +765,28 @@ function setupAttendancePage() {
   const attendanceDate = document.getElementById("attendanceDate");
   const subjectName = document.getElementById("subjectName");
   const attendanceStatus = document.getElementById("attendanceStatus");
+  const toggleAttendanceHistory = document.getElementById(
+    "toggleAttendanceHistory",
+  );
+  const attendanceHistoryContent = document.getElementById(
+    "attendanceHistoryContent",
+  );
   const clearAttendance = document.getElementById("clearAttendance");
   const attendanceBody = document.getElementById("attendanceBody");
   const attendanceFilter = document.getElementById("attendanceFilter");
+
+  toggleAttendanceHistory?.addEventListener("click", () => {
+    if (!attendanceHistoryContent) {
+      return;
+    }
+
+    const shouldShow = attendanceHistoryContent.hidden;
+    attendanceHistoryContent.hidden = !shouldShow;
+    toggleAttendanceHistory.textContent = shouldShow
+      ? "Hide History"
+      : "Show History";
+    toggleAttendanceHistory.setAttribute("aria-expanded", String(shouldShow));
+  });
 
   if (attendanceDate) {
     attendanceDate.value = getToday();
@@ -684,6 +822,10 @@ function setupAttendancePage() {
 
     const id = target.dataset.attendanceId;
     if (!id) {
+      return;
+    }
+
+    if (!confirmDelete("attendance record")) {
       return;
     }
 
@@ -884,29 +1026,20 @@ function setupNotesPage() {
 }
 
 function setupSharedUi() {
-  currentThemeLabel = ensureThemeStatusLabel();
-
   if (storageNotice) {
-    storageNotice.hidden = false;
-    if (storage.type === "localStorage") {
-      storageNotice.textContent =
-        "Data is auto-saved to local storage and remains after refresh.";
-    } else if (storage.type === "sessionStorage") {
-      storageNotice.textContent =
-        "Data is saved in session storage for this browser session.";
-    } else if (storage.type === "cookie") {
-      storageNotice.textContent =
-        "Data is saved using cookies and remains after refresh.";
-    } else {
-      storageNotice.textContent =
-        "Storage is limited in this browser. Data may reset after page close.";
-    }
+    storageNotice.hidden = true;
+    storageNotice.textContent = "";
   }
+
+  setupResetButton();
 
   const savedTheme = loadTheme();
   applyTheme(savedTheme);
 
-  themeToggle?.addEventListener("click", toggleTheme);
+  themeToggle?.addEventListener("click", () => {
+    const next = document.body.classList.contains("dark") ? "light" : "dark";
+    applyTheme(next);
+  });
 }
 
 setupSharedUi();
