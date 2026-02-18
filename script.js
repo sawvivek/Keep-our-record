@@ -735,6 +735,10 @@ function setupUpdatesPage() {
       return;
     }
 
+    if (!confirmDelete("daily update")) {
+      return;
+    }
+
     updates = updates.filter((item) => item.id !== id);
     saveData(DAILY_KEY, updates);
     renderUpdates();
@@ -907,6 +911,10 @@ function setupWriteupsPage() {
 
     const deleteId = target.dataset.writeupId;
     if (deleteId) {
+      if (!confirmDelete("writeup")) {
+        return;
+      }
+
       writeups = writeups.filter((item) => item.id !== deleteId);
       saveData(WRITEUP_KEY, writeups);
       renderWriteups();
@@ -996,6 +1004,10 @@ function setupNotesPage() {
 
     const id = target.dataset.noteId;
     if (!id) {
+      return;
+    }
+
+    if (!confirmDelete("note")) {
       return;
     }
 
