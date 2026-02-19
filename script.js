@@ -689,6 +689,50 @@ function renderDashboard() {
   }
 }
 
+function setupHistoryToggle(
+  toggleId,
+  contentId,
+  showLabel = "Show History",
+  hideLabel = "Hide History",
+) {
+  const toggleButton = document.getElementById(toggleId);
+  const historyContent = document.getElementById(contentId);
+
+  toggleButton?.addEventListener("click", () => {
+    if (!historyContent) {
+      return;
+    }
+
+    const shouldShow = historyContent.hidden;
+    historyContent.hidden = !shouldShow;
+    toggleButton.textContent = shouldShow ? hideLabel : showLabel;
+    toggleButton.setAttribute("aria-expanded", String(shouldShow));
+  });
+}
+
+function setupDashboardPage() {
+  setupHistoryToggle(
+    "toggleDashboardUpdates",
+    "dashboardUpdatesContent",
+    "Show Full Details",
+    "Hide Full Details",
+  );
+  setupHistoryToggle(
+    "toggleDashboardWriteups",
+    "dashboardWriteupsContent",
+    "Show Full Details",
+    "Hide Full Details",
+  );
+  setupHistoryToggle(
+    "toggleDashboardNotes",
+    "dashboardNotesContent",
+    "Show Full Details",
+    "Hide Full Details",
+  );
+
+  renderDashboard();
+}
+
 function setupUpdatesPage() {
   const dailyForm = document.getElementById("dailyForm");
   const updateDate = document.getElementById("updateDate");
@@ -697,6 +741,8 @@ function setupUpdatesPage() {
   const clearUpdates = document.getElementById("clearUpdates");
   const dailyList = document.getElementById("dailyList");
   const updateSearch = document.getElementById("updateSearch");
+
+  setupHistoryToggle("toggleUpdatesHistory", "updatesHistoryContent");
 
   if (updateDate) {
     updateDate.value = getToday();
@@ -871,6 +917,8 @@ function setupWriteupsPage() {
   const writeupSearch = document.getElementById("writeupSearch");
   const writeupFilter = document.getElementById("writeupFilter");
 
+  setupHistoryToggle("toggleWriteupsHistory", "writeupsHistoryContent");
+
   if (writeupDate) {
     writeupDate.value = getToday();
   }
@@ -970,6 +1018,8 @@ function setupNotesPage() {
   const noteList = document.getElementById("noteList");
   const noteSearch = document.getElementById("noteSearch");
 
+  setupHistoryToggle("toggleNotesHistory", "notesHistoryContent");
+
   if (noteDate) {
     noteDate.value = getToday();
   }
@@ -1057,7 +1107,7 @@ function setupSharedUi() {
 setupSharedUi();
 
 if (page === "dashboard") {
-  renderDashboard();
+  setupDashboardPage();
 }
 if (page === "updates") {
   setupUpdatesPage();

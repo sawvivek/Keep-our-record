@@ -59,18 +59,30 @@
       <section class="card">
         <div class="section-head">
           <h2>Daily Updates History</h2>
-          <button id="clearUpdates" class="btn danger" type="button">
-            Clear All
+          <button
+            id="toggleUpdatesHistory"
+            class="btn secondary"
+            type="button"
+            aria-expanded="false"
+          >
+            Show History
           </button>
         </div>
-        <div class="toolbar">
-          <input
-            id="updateSearch"
-            type="text"
-            placeholder="Search updates by title or notes"
-          />
+        <div id="updatesHistoryContent" hidden>
+          <div class="toolbar toolbar-end">
+            <button id="clearUpdates" class="btn danger" type="button">
+              Clear All
+            </button>
+          </div>
+          <div class="toolbar">
+            <input
+              id="updateSearch"
+              type="text"
+              placeholder="Search updates by title or notes"
+            />
+          </div>
+          <div id="dailyList" class="list"></div>
         </div>
-        <div id="dailyList" class="list"></div>
       </section>
     </main>
 

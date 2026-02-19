@@ -70,18 +70,30 @@
       <section class="card">
         <div class="section-head">
           <h2>Saved Notes</h2>
-          <button id="clearNotes" class="btn danger" type="button">
-            Clear All
+          <button
+            id="toggleNotesHistory"
+            class="btn secondary"
+            type="button"
+            aria-expanded="false"
+          >
+            Show History
           </button>
         </div>
-        <div class="toolbar">
-          <input
-            id="noteSearch"
-            type="text"
-            placeholder="Search by title or note text"
-          />
+        <div id="notesHistoryContent" hidden>
+          <div class="toolbar toolbar-end">
+            <button id="clearNotes" class="btn danger" type="button">
+              Clear All
+            </button>
+          </div>
+          <div class="toolbar">
+            <input
+              id="noteSearch"
+              type="text"
+              placeholder="Search by title or note text"
+            />
+          </div>
+          <div id="noteList" class="list"></div>
         </div>
-        <div id="noteList" class="list"></div>
       </section>
     </main>
 

@@ -107,18 +107,54 @@
       </section>
 
       <section class="card">
-        <h2>Recent Daily Updates</h2>
-        <div id="dashboardUpdates" class="list"></div>
+        <div class="section-head">
+          <h2>Recent Daily Updates</h2>
+          <button
+            id="toggleDashboardUpdates"
+            class="btn secondary"
+            type="button"
+            aria-expanded="false"
+          >
+            Show Full Details
+          </button>
+        </div>
+        <div id="dashboardUpdatesContent" hidden>
+          <div id="dashboardUpdates" class="list"></div>
+        </div>
       </section>
 
       <section class="card">
-        <h2>Recent Writeups</h2>
-        <div id="dashboardWriteups" class="list"></div>
+        <div class="section-head">
+          <h2>Recent Writeups</h2>
+          <button
+            id="toggleDashboardWriteups"
+            class="btn secondary"
+            type="button"
+            aria-expanded="false"
+          >
+            Show Full Details
+          </button>
+        </div>
+        <div id="dashboardWriteupsContent" hidden>
+          <div id="dashboardWriteups" class="list"></div>
+        </div>
       </section>
 
       <section class="card">
-        <h2>Recent Notes</h2>
-        <div id="dashboardNotes" class="list"></div>
+        <div class="section-head">
+          <h2>Recent Notes</h2>
+          <button
+            id="toggleDashboardNotes"
+            class="btn secondary"
+            type="button"
+            aria-expanded="false"
+          >
+            Show Full Details
+          </button>
+        </div>
+        <div id="dashboardNotesContent" hidden>
+          <div id="dashboardNotes" class="list"></div>
+        </div>
       </section>
     </main>
 

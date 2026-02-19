@@ -101,23 +101,35 @@
       <section class="card">
         <div class="section-head">
           <h2>Writeup History</h2>
-          <button id="clearWriteups" class="btn danger" type="button">
-            Clear All
+          <button
+            id="toggleWriteupsHistory"
+            class="btn secondary"
+            type="button"
+            aria-expanded="false"
+          >
+            Show History
           </button>
         </div>
-        <div class="toolbar row-toolbar">
-          <input
-            id="writeupSearch"
-            type="text"
-            placeholder="Search by topic, writeup, teacher"
-          />
-          <select id="writeupFilter">
-            <option value="All">All Status</option>
-            <option value="Pending">Pending</option>
-            <option value="Checked">Checked</option>
-          </select>
+        <div id="writeupsHistoryContent" hidden>
+          <div class="toolbar toolbar-end">
+            <button id="clearWriteups" class="btn danger" type="button">
+              Clear All
+            </button>
+          </div>
+          <div class="toolbar row-toolbar">
+            <input
+              id="writeupSearch"
+              type="text"
+              placeholder="Search by topic, writeup, teacher"
+            />
+            <select id="writeupFilter">
+              <option value="All">All Status</option>
+              <option value="Pending">Pending</option>
+              <option value="Checked">Checked</option>
+            </select>
+          </div>
+          <div id="writeupList" class="list"></div>
         </div>
-        <div id="writeupList" class="list"></div>
       </section>
     </main>
 
