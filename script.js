@@ -25,6 +25,9 @@ const RESET_KEYS = [
   LEGACY_THEME_KEY,
 ].filter(Boolean);
 
+const MAX_IMAGE_SIZE_BYTES = 3 * 1024 * 1024;
+const MAX_PDF_SIZE_BYTES = 5 * 1024 * 1024;
+
 const page = document.body.dataset.page || "dashboard";
 const themeToggle = document.getElementById("themeToggle");
 const toast = document.getElementById("toast");
@@ -70,6 +73,27 @@ function escapeHtml(text) {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
+}
+
+function readFileAsDataUrl(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result || ""));
+    reader.onerror = () => reject(new Error("Could not read file."));
+    reader.readAsDataURL(file);
+  });
+}
+
+function normalizeUpdateAttachment(file, type) {
+  if (!file) {
+    return null;
+  }
+  return {
+    type,
+    name: file.name,
+    mime: file.type,
+    size: file.size,
+  };
 }
 
 function createStorage() {
@@ -382,6 +406,31 @@ function renderUpdates() {
       const note = item.notes?.trim()
         ? `<p class="item-note">${escapeHtml(item.notes)}</p>`
         : "";
+      const hasPhoto = Boolean(item.photo?.dataUrl);
+      const hasPdf = Boolean(item.pdf?.dataUrl);
+      const attachments = hasPhoto || hasPdf;
+      const attachmentsHtml = attachments
+        ? `
+          <div class="item-attachments">
+            ${
+              hasPhoto
+                ? `<div class="item-photo-wrap">
+                     <img
+                       class="item-photo"
+                       src="${item.photo.dataUrl}"
+                       alt="${escapeHtml(item.photo.name || "Uploaded photo")}" />
+                     <a class="item-link" href="${item.photo.dataUrl}" download="${escapeHtml(item.photo.name || "photo")}">Download Photo</a>
+                   </div>`
+                : ""
+            }
+            ${
+              hasPdf
+                ? `<a class="item-link" href="${item.pdf.dataUrl}" target="_blank" rel="noopener noreferrer">Open PDF: ${escapeHtml(item.pdf.name || "document.pdf")}</a>`
+                : ""
+            }
+          </div>
+        `
+        : "";
       return `
       <article class="item">
         <div class="item-head">
@@ -389,6 +438,7 @@ function renderUpdates() {
           <span class="item-date">${escapeHtml(getDisplayDateTime(item))}</span>
         </div>
         ${note}
+        ${attachmentsHtml}
         <div class="item-actions">
           <button class="action-btn" data-update-id="${item.id}">Delete</button>
         </div>
@@ -738,6 +788,8 @@ function setupUpdatesPage() {
   const updateDate = document.getElementById("updateDate");
   const updateTitle = document.getElementById("updateTitle");
   const updateNotes = document.getElementById("updateNotes");
+  const updatePhoto = document.getElementById("updatePhoto");
+  const updatePdf = document.getElementById("updatePdf");
   const clearUpdates = document.getElementById("clearUpdates");
   const dailyList = document.getElementById("dailyList");
   const updateSearch = document.getElementById("updateSearch");
@@ -748,14 +800,62 @@ function setupUpdatesPage() {
     updateDate.value = getToday();
   }
 
-  dailyForm?.addEventListener("submit", (event) => {
+  dailyForm?.addEventListener("submit", async (event) => {
     event.preventDefault();
+
+    const photoFile = updatePhoto?.files?.[0] || null;
+    const pdfFile = updatePdf?.files?.[0] || null;
+
+    if (photoFile && !photoFile.type.startsWith("image/")) {
+      showToast("Please choose a valid photo file");
+      return;
+    }
+
+    if (pdfFile && pdfFile.type !== "application/pdf") {
+      showToast("Please choose a valid PDF file");
+      return;
+    }
+
+    if (photoFile && photoFile.size > MAX_IMAGE_SIZE_BYTES) {
+      showToast("Photo is too large (max 3MB)");
+      return;
+    }
+
+    if (pdfFile && pdfFile.size > MAX_PDF_SIZE_BYTES) {
+      showToast("PDF is too large (max 5MB)");
+      return;
+    }
+
+    let photoDataUrl = "";
+    let pdfDataUrl = "";
+    try {
+      [photoDataUrl, pdfDataUrl] = await Promise.all([
+        photoFile ? readFileAsDataUrl(photoFile) : Promise.resolve(""),
+        pdfFile ? readFileAsDataUrl(pdfFile) : Promise.resolve(""),
+      ]);
+    } catch {
+      showToast("Failed to read selected files");
+      return;
+    }
+
     const entry = {
       id: createId(),
       date: updateDate?.value,
       createdAt: getNowIso(),
       title: updateTitle?.value.trim(),
       notes: updateNotes?.value.trim() || "",
+      photo: photoFile
+        ? {
+            ...normalizeUpdateAttachment(photoFile, "photo"),
+            dataUrl: photoDataUrl,
+          }
+        : null,
+      pdf: pdfFile
+        ? {
+            ...normalizeUpdateAttachment(pdfFile, "pdf"),
+            dataUrl: pdfDataUrl,
+          }
+        : null,
     };
 
     if (!entry.date || !entry.title) {

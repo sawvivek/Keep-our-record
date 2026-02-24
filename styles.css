@@ -427,6 +427,39 @@ textarea::placeholder {
   color: color-mix(in srgb, var(--text) 88%, transparent);
 }
 
+.item-attachments {
+  margin-top: 10px;
+  display: grid;
+  gap: 8px;
+}
+
+.item-photo-wrap {
+  display: grid;
+  gap: 8px;
+}
+
+.item-photo {
+  width: min(280px, 100%);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+
+.item-link {
+  width: fit-content;
+  text-decoration: none;
+  border: 1px solid var(--primary);
+  color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 10%, transparent);
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+.item-link:hover {
+  transform: translateY(-1px);
+  background: color-mix(in srgb, var(--primary) 18%, transparent);
+}
+
 body.dark .item-note {
   color: color-mix(in srgb, var(--text) 90%, transparent);
 }
